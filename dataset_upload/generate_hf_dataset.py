@@ -1049,6 +1049,15 @@ def main(cfg: GenerateConfig):
             max_trajectories=cfg.output.max_trajectories,
         )
         trajectories = flatten_task_data(task_data)
+    elif "cloth" in cfg.dataset.dataset_name.lower():
+        from dataset_upload.dataset_loaders.cloth_loader import load_cloth_dataset
+
+        print(f"Loading cloth loading dataset from: {cfg.dataset.dataset_path}")
+        task_data = load_cloth_dataset(
+            cfg.dataset.dataset_path,
+            max_trajectories=cfg.output.max_trajectories,
+        )
+        trajectories = flatten_task_data(task_data)
     else:
         raise ValueError(f"Unknown dataset type: {cfg.dataset.dataset_name}")
 
