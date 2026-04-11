@@ -158,6 +158,10 @@ class RBMConfig:
         default=32,
         metadata={"help": "Batch size for RBM/ReWiND model inference"},
     )
+    quantization: bool = field(
+        default=False,
+        metadata={"help": "Enable 8-bit quantization via bitsandbytes for reduced memory usage"},
+    )
 
 
 @dataclass

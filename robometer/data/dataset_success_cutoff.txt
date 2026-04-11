@@ -63,3 +63,12 @@ humanoid_everyday_rfm,0.80
 motif_rfm,0.95
 roboarena_eval_debug_nowrist,0.90
 roboarena,0.90
+cloth_good_top,0.90
+cloth_good_left_wrist,0.90
+cloth_good_right_wrist,0.90
+cloth_dagger_top,0.90
+cloth_dagger_left_wrist,0.90
+cloth_dagger_right_wrist,0.90
+cloth_failure_top,0.90
+cloth_failure_left_wrist,0.90
+cloth_failure_right_wrist,0.90

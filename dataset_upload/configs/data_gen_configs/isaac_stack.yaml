@@ -1,0 +1,16 @@
+dataset:
+  dataset_path: "datasets"
+  dataset_name: isaac_stack
+
+output:
+  output_dir: ./robometer_dataset/isaac_stack
+  max_trajectories: null
+  max_frames: 32
+  shortest_edge_size: 200
+  use_video: true
+  fps: 10
+  center_crop: false
+
+hub:
+  push_to_hub: false
+  hub_repo_id: isaac_stack_rbm

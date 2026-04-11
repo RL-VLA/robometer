@@ -777,6 +777,7 @@ def load_model_from_hf(
     model_path: str,
     device: torch.device,
     hub_token: Optional[str] = None,
+    quantization_override: Optional[bool] = None,
 ) -> Tuple[Optional[ExperimentConfig], Optional[Any], Optional[Any], Optional[Any]]:
     """
     Load reward model config and model from HuggingFace or local checkpoint.
@@ -875,6 +876,10 @@ def load_model_from_hf(
     filtered_config = {k: v for k, v in model_config_dict.items() if k in valid_keys}
 
     exp_config = ExperimentConfig(**filtered_config)
+
+    if quantization_override is not None:
+        exp_config.model.quantization = quantization_override
+
     # Use resolved_path for loading the actual model
     # Import here to avoid circular dependency with setup_utils
     from robometer.utils.setup_utils import setup_model_and_processor

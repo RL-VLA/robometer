@@ -1,0 +1,23 @@
+# Preprocess config for Isaac Stack Cube dataset.
+# Use with: python -m robometer.data.scripts.preprocess_datasets --config robometer/configs/preprocess_isaac_stack.yaml
+#
+# Before running:
+#   export ROBOMETER_PROCESSED_DATASETS_PATH=/path/to/save/processed_datasets
+
+eval_datasets:
+  - "robometer_dataset/isaac_stack"
+
+eval_subsets:
+  - ["isaac_stack"]
+
+train_datasets: []
+train_subsets: []
+
+max_frames_for_preprocessing: 32
+video_frame_sampling: "uniform"
+num_proc: 1
+num_threads: 4
+force_reprocess: false
+cache_dir: "/home/lidar/Documents/robometer/processed_datasets"
+
+precompute_embeddings: false

@@ -27,12 +27,14 @@ setup_loguru_logging("TRACE")
 class RBMModel:
     """RBM/ReWiND model for baseline evaluation with unified compute methods."""
 
-    def __init__(self, checkpoint_path: str):
+    def __init__(self, checkpoint_path: str, quantization: bool = False):
         """Initialize the RBM/ReWiND model wrapper.
 
         Args:
             checkpoint_path: Path to model checkpoint (HuggingFace repo ID or local path)
                            The config.yaml will be loaded from the checkpoint automatically
+            quantization: Override quantization setting from checkpoint config.
+                         If True, enables 8-bit quantization via bitsandbytes.
         """
         self.checkpoint_path = checkpoint_path
 
@@ -46,6 +48,7 @@ class RBMModel:
         exp_config, tokenizer, processor, model = load_model_from_hf(
             model_path=checkpoint_path,
             device=device,
+            quantization_override=quantization if quantization else None,
         )
 
         # Store loaded components

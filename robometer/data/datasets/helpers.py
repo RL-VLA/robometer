@@ -142,13 +142,23 @@ def load_frames_from_npz(npz_filepath: str) -> np.ndarray:
     if not npz_filepath:
         raise ValueError("npz_filepath is None or empty")
 
+    processed_root = os.environ.get("ROBOMETER_PROCESSED_DATASETS_PATH", "")
+
     # If path is relative, prepend ROBOMETER_PROCESSED_DATASETS_PATH
     if not os.path.isabs(npz_filepath):
-        processed_root = os.environ.get("ROBOMETER_PROCESSED_DATASETS_PATH", "")
         # Normalize: strip processed_datasets when env points to repo root
-        processed_root = processed_root.replace("processed_datasets", "")
-        if processed_root:
-            npz_filepath = os.path.join(processed_root, npz_filepath)
+        root = processed_root.replace("processed_datasets", "")
+        if root:
+            npz_filepath = os.path.join(root, npz_filepath)
+    elif not os.path.exists(npz_filepath) and processed_root:
+        # Absolute path doesn't exist — it was baked in from a different machine.
+        # Extract the relative portion after any "processed_datasets/" segment and
+        # remap it to the current ROBOMETER_PROCESSED_DATASETS_PATH.
+        marker = "processed_datasets/"
+        idx = npz_filepath.find(marker)
+        if idx != -1:
+            relative_suffix = npz_filepath[idx + len(marker):]
+            npz_filepath = os.path.join(processed_root, relative_suffix)
 
     if not os.path.exists(npz_filepath):
         raise ValueError(f"NPZ file not found: {npz_filepath}")
@@ -177,14 +187,20 @@ def load_embeddings_from_path(embeddings_path: str) -> torch.Tensor:
         ipdb.set_trace()
         raise ValueError(f"embeddings_path: {embeddings_path} is None or empty")
 
+    processed_root = os.environ.get("ROBOMETER_PROCESSED_DATASETS_PATH", "")
+
     # If path is relative, prepend ROBOMETER_PROCESSED_DATASETS_PATH
     if not os.path.isabs(embeddings_path):
-        processed_root = os.environ.get("ROBOMETER_PROCESSED_DATASETS_PATH", "")
-        # Normalize: strip processed_datasets when env points to repo root
-        processed_root = processed_root.replace("processed_datasets/", "")
-        processed_root = processed_root.replace("processed_datasets", "")
-        if processed_root:
-            embeddings_path = os.path.join(processed_root, embeddings_path)
+        root = processed_root.replace("processed_datasets/", "").replace("processed_datasets", "")
+        if root:
+            embeddings_path = os.path.join(root, embeddings_path)
+    elif not os.path.exists(embeddings_path) and processed_root:
+        # Absolute path baked in from a different machine — remap to current root.
+        marker = "processed_datasets/"
+        idx = embeddings_path.find(marker)
+        if idx != -1:
+            relative_suffix = embeddings_path[idx + len(marker):]
+            embeddings_path = os.path.join(processed_root, relative_suffix)
 
     with open(embeddings_path, "rb") as f:
         embeddings_data = torch.load(f, map_location="cpu")

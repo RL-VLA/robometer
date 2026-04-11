@@ -1058,6 +1058,14 @@ def main(cfg: GenerateConfig):
             max_trajectories=cfg.output.max_trajectories,
         )
         trajectories = flatten_task_data(task_data)
+    elif "isaac_stack" in cfg.dataset.dataset_name.lower():
+        from dataset_upload.dataset_loaders.isaac_stack_loader import load_isaac_stack_dataset
+
+        task_data = load_isaac_stack_dataset(
+            cfg.dataset.dataset_path,
+            max_trajectories=cfg.output.max_trajectories,
+        )
+        trajectories = flatten_task_data(task_data)
     else:
         raise ValueError(f"Unknown dataset type: {cfg.dataset.dataset_name}")
 

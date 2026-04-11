@@ -4,7 +4,10 @@ Shared setup utilities for RBM training.
 This file contains setup functions that can be reused across different training scripts.
 """
 
-from unsloth import FastVisionModel
+try:
+    from unsloth import FastVisionModel
+except (NotImplementedError, ImportError):
+    FastVisionModel = None
 
 import re
 import os

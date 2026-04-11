@@ -497,7 +497,7 @@ def run_baseline_evaluation(cfg: BaselineEvalConfig, base_data_cfg: DataConfig) 
     elif cfg.reward_model in ["rewind", "rbm"]:
         if not cfg.model_path:
             raise ValueError("model_path is required for RBM/ReWiND reward model")
-        model = RBMModel(checkpoint_path=cfg.model_path)
+        model = RBMModel(checkpoint_path=cfg.model_path, quantization=model_config_dict.get("quantization", False))
     else:
         raise ValueError(
             f"Unknown reward_model: {cfg.reward_model}. Must be 'rlvlmf', 'gvl', 'vlac', 'robodopamine', 'topreward', 'roboreward', 'rbm', or 'rewind'"
@@ -563,6 +563,7 @@ def run_baseline_evaluation(cfg: BaselineEvalConfig, base_data_cfg: DataConfig) 
 
             if eval_type == "reward_alignment":
                 sampler_kwargs["max_trajectories"] = cfg.custom_eval.reward_alignment_max_trajectories
+                sampler_kwargs["max_rollouts"] = cfg.custom_eval.reward_alignment_max_rollouts
                 sampler_kwargs["use_frame_steps"] = cfg.custom_eval.use_frame_steps
                 sampler_kwargs["subsample_n_frames"] = cfg.custom_eval.subsample_n_frames
                 sampler_kwargs["pad_frames"] = cfg.custom_eval.pad_frames

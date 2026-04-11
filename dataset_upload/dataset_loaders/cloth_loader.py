@@ -29,7 +29,10 @@ from tqdm import tqdm
 
 from dataset_upload.helpers import generate_unique_id
 
-TASK_DESCRIPTION = "Load the t-shirt onto the small table"
+TASK_DESCRIPTION = (
+    "Pick up the t-shirt on the big table, move it over to the small table, "
+    "and place it onto the small table"
+)
 
 # splits to include and their quality labels
 SPLIT_QUALITY: dict[str, str] = {

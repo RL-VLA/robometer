@@ -7,3 +7,4 @@ model_path: null  # Path to RBM model checkpoint (HuggingFace repo ID or local p
 
 model_config:
   batch_size: 32
+  quantization: false  # Enable 8-bit quantization for reduced memory usage

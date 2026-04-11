@@ -316,6 +316,12 @@ class CustomEvaluationConfig:
             "help": "Maximum number of trajectories to use for reward alignment evaluation. None = use all trajectories."
         },
     )
+    reward_alignment_max_rollouts: Optional[int] = field(
+        default=None,
+        metadata={
+            "help": "Maximum number of rollouts (groups of camera views sharing a rollout_id) for reward alignment. Overrides reward_alignment_max_trajectories when set."
+        },
+    )
     use_frame_steps: bool = field(
         default=True,
         metadata={

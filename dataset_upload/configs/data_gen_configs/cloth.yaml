@@ -1,0 +1,17 @@
+# Pi0 GIM T-shirt dagger dataset. Override path with --dataset.dataset_path=/path/to/data
+dataset:
+  dataset_path: "pi0_gim_tshirt_dagger"
+  dataset_name: cloth
+
+output:
+  output_dir: ./robometer_dataset/cloth_tshirt
+  max_trajectories: null
+  max_frames: 32
+  shortest_edge_size: 240
+  use_video: true
+  fps: 10
+  center_crop: false
+
+hub:
+  push_to_hub: false
+  hub_repo_id: cloth_tshirt_rbm

@@ -898,7 +898,21 @@ class DatasetPreprocessor:
             return dataset
         else:
             # Load from local disk
-            dataset = load_dataset(dataset_path)
+            from datasets import load_from_disk
+            dataset = load_from_disk(dataset_path)
+            # Add frames_video column expected by _process_individual_dataset
+            if "frames_video" not in dataset.column_names and "frames" in dataset.column_names:
+                dataset_base_dir = os.path.dirname(dataset_path)
+
+                def patch_path(old_path):
+                    if os.path.exists(old_path):
+                        return old_path
+                    candidate = os.path.join(dataset_base_dir, old_path)
+                    if os.path.exists(candidate):
+                        return candidate
+                    return old_path
+
+                dataset = dataset.map(lambda x: {"frames_video": patch_path(x["frames"]), "frames_path": patch_path(x["frames"])})
             return dataset
 
     def _show_preprocessed_datasets(self, all_datasets: list[str]):

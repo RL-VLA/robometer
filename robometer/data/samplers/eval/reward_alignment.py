@@ -31,6 +31,7 @@ class RewardAlignmentSampler(RBMBaseSampler):
     def __init__(
         self,
         max_trajectories: int | None = None,
+        max_rollouts: int | None = None,
         frame_step: int = 1,
         use_frame_steps: bool = True,
         subsample_n_frames: int = None,
@@ -39,6 +40,7 @@ class RewardAlignmentSampler(RBMBaseSampler):
         super().__init__(**kwargs)
 
         self.max_trajectories = max_trajectories
+        self.max_rollouts = max_rollouts
         self.frame_step = frame_step
         self.use_frame_steps = use_frame_steps
         self.subsample_n_frames = subsample_n_frames
@@ -55,7 +57,20 @@ class RewardAlignmentSampler(RBMBaseSampler):
 
         # Limit number of trajectories if specified
         trajectories_to_process = self.robot_trajectories
-        if self.max_trajectories is not None and self.max_trajectories < len(self.robot_trajectories):
+        if self.max_rollouts is not None:
+            # Group trajectory indices by rollout_id, sample N rollouts, keep all their camera views
+            rollout_groups: dict[str, list] = {}
+            for traj_idx in self.robot_trajectories:
+                rollout_id = self.dataset[traj_idx].get("rollout_id")
+                if rollout_id is None:
+                    rollout_id = str(traj_idx)  # fallback: treat each traj as its own rollout
+                rollout_groups.setdefault(rollout_id, []).append(traj_idx)
+            all_rollout_ids = list(rollout_groups.keys())
+            selected_ids = self._local_random.sample(
+                all_rollout_ids, min(self.max_rollouts, len(all_rollout_ids))
+            )
+            trajectories_to_process = [idx for rid in selected_ids for idx in rollout_groups[rid]]
+        elif self.max_trajectories is not None and self.max_trajectories < len(self.robot_trajectories):
             trajectories_to_process = self._local_random.sample(self.robot_trajectories, self.max_trajectories)
 
         rank_0_print(
